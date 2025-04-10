@@ -1,0 +1,66 @@
+name: Generate Mindmap
+
+on:
+  # push:
+  #   branches:
+  #     - master
+  schedule:
+    - cron: '30 23,11 * * *'  # 7:30 AM and 7:30 PM UTC+8 (23:30 and 11:30 UTC)
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  crawl-hackernews:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Needed for creating releases
+      
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+    
+    - name: "Set up Python"
+      uses: actions/setup-python@v5
+      with:
+        python-version-file: "pyproject.toml"
+    
+    - name: Install dependencies
+      run: |
+        uv sync --all-extras --dev
+
+    - name: Restore cache folder
+      uses: actions/cache/restore@v4
+      with:
+        path: cache/
+        key: hackernews-cache-${{ github.run_id }}
+        restore-keys: |
+          hackernews-cache-
+    - name: Set NOW variable
+      id: set_now
+      run: |
+        echo "NOW=$(TZ=Asia/Shanghai date '+%Y-%m-%d %H:%M:%S %z')" >> $GITHUB_ENV
+    - name: Run crawler
+      env:
+        SMOLLLM_MODEL: ${{ vars.SMOLLLM_MODEL }}
+         # change or add more keys if we need more models
+        GROK_API_KEY: ${{ secrets.GROK_API_KEY }} 
+      run: uv run main.py
+    
+    - name: Save cache folder
+      uses: actions/cache/save@v4
+      with:
+        path: cache/
+        key: hackernews-cache-${{ github.run_id }}
+    
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        name: "HN TOP Story Mindmap ${{ env.NOW }}"
+        tag_name: latest
+        body_path: cache/hackernews.md
+        files: |
+          cache/*
+        prerelease: false
