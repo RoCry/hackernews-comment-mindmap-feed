@@ -4,8 +4,8 @@ on:
   # push:
   #   branches:
   #     - master
-  schedule:
-    - cron: '30 23,11 * * *'  # 7:30 AM and 7:30 PM UTC+8 (23:30 and 11:30 UTC)
+  # schedule:
+  #   - cron: '30 23,11 * * *'  # 7:30 AM and 7:30 PM UTC+8 (23:30 and 11:30 UTC)
   workflow_dispatch:  # Allow manual trigger
 
 jobs:
