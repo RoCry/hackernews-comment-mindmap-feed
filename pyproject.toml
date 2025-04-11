@@ -11,8 +11,8 @@ dependencies = [
     "smolllm>=0.2.3",
 ]
 
-[tool.uv.sources]
-hackernews = { git = "https://github.com/rocry/hackernews" }
-
 [tool.ruff.lint]
 extend-select = ["I"]
+
+[tool.uv.sources]
+hackernews = { path = "../hackernews", editable = true }

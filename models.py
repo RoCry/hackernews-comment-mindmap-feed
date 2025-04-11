@@ -35,5 +35,4 @@ class Feed(BaseModel):
     @classmethod
     def load_from_json(cls, filepath: str) -> "Feed":
         with open(filepath, "r", encoding="utf-8") as f:
-            data = json.load(f)
-            return cls.model_validate(data)
+            return cls.model_validate_json(f.read())

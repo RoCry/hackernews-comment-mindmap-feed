@@ -140,12 +140,28 @@ wheels = [
 [[package]]
 name = "hackernews"
 version = "0.1.0"
-source = { git = "https://github.com/rocry/hackernews#2f6c34f6b499fb5fb03e1ff8d42c87cfc2668273" }
+source = { editable = "../hackernews" }
 dependencies = [
     { name = "aiosqlite" },
     { name = "httpx" },
     { name = "pydantic" },
     { name = "trafilatura" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "aiosqlite", specifier = ">=0.20.0" },
+    { name = "fire", marker = "extra == 'example'", specifier = ">=0.7.0" },
+    { name = "httpx", specifier = ">=0.27" },
+    { name = "pydantic", specifier = ">=2.10" },
+    { name = "trafilatura", specifier = ">=2.0" },
+]
+provides-extras = ["example"]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "gitpython", specifier = ">=3.1.44" },
+    { name = "pytest", specifier = ">=8.3.4" },
 ]
 
 [[package]]
@@ -161,7 +177,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "hackernews", git = "https://github.com/rocry/hackernews" },
+    { name = "hackernews", editable = "../hackernews" },
     { name = "loguru", specifier = ">=0.7.3" },
     { name = "pydantic", specifier = ">=2.11.3" },
     { name = "smolllm", specifier = ">=0.2.3" },
